@@ -1,0 +1,30 @@
+package com.enterprise.iam.dto;
+
+public class MfaSetupResponse {
+    private String secret;
+    private String qrCodeUrl;
+
+    public MfaSetupResponse() {
+    }
+
+    public MfaSetupResponse(String secret, String qrCodeUrl) {
+        this.secret = secret;
+        this.qrCodeUrl = qrCodeUrl;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
+    }
+}

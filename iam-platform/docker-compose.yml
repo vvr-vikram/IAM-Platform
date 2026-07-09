@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: iam-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: iam_db
+      MYSQL_ROOT_PASSWORD: 1254
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1254"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: iam-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: iam-app
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=jdbc:mysql://db:3306/iam_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=1254
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+  redis_data:
